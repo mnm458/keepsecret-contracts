@@ -92,20 +92,20 @@ class PoseidonHasher implements Hasher {
         this.poseidon = poseidon;
     }
 
-    hash(left: string, right: string) {
+    hash(left: BigNumber, right: BigNumber) {
         return poseidonHash(this.poseidon, [left, right]);
     }
 }
 
-function poseidonHash(poseidon: any, inputs: any): string {
+function poseidonHash(poseidon: any, inputs: any): BigNumber {
     const hash = poseidon(inputs.map((x: any) => ethers.BigNumber.from(x).toBigInt()));
     // Make the number within the field size
     const hashStr = poseidon.F.toString(hash);
+
+    const num = ethers.BigNumber.from(hashStr);
     // Make it a valid hex string
-    const hashHex = ethers.BigNumber.from(hashStr).toHexString();
-    // pad zero to make it 32 bytes, so that the output can be taken as a bytes32 contract argument
-    const bytes32 = ethers.utils.hexZeroPad(hashHex, 32);
-    return bytes32;
+    
+    return num;
 }
 
 interface Proof {
